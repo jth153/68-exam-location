@@ -1,0 +1,135 @@
+/* ฟอนต์ + พื้นหลัง */
+body {
+    font-family: 'Sarabun', sans-serif;
+    background: linear-gradient(135deg, #e8ebf2 0%, #f8fafc 100%);
+    margin: 0;
+    padding: 40px 15px;
+}
+
+/* กล่องหลักแบบ MacOS Glass */
+.container.glass {
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* หัวข้อ */
+h1 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #222;
+}
+
+/* Search box */
+.search-box {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.input-text {
+    padding: 12px 16px;
+    width: 340px;
+    border-radius: 12px;
+    border: 1px solid #cfd4dc;
+    font-size: 15px;
+    background: #ffffffaa;
+    backdrop-filter: blur(10px);
+}
+
+/* ปุ่มสไตล์ Mac */
+.btn-primary {
+    padding: 12px 18px;
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,122,255,0.3);
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: #006be6;
+}
+
+/* สถานะ */
+.status {
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* ตาราง */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+thead {
+    background: #f2f4f7;
+}
+
+th, td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e3e6eb;
+}
+
+th {
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background: #eef2f8;
+}
+
+.no-data {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+/* หมายเหตุด้านล่าง */
+.note {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #444;
+    background: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid #e0e4ee;
+}
+
+.note a {
+    color: #007aff;
+    text-decoration: none;
+}
+
+.note a:hover {
+    text-decoration: underline;
+}
+
+/* ปรับสำหรับมือถือ */
+@media (max-width: 600px) {
+    .input-text {
+        width: 100%;
+    }
+
+    table {
+        font-size: 12px;
+    }
+}

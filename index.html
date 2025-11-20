@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <title>ค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- ฟอนต์ Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- ไฟล์ CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div class="container glass">
+    <h1>ค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2</h1>
+
+    <div class="search-box">
+        <input
+            type="text"
+            id="keywordInput"
+            class="input-text"
+            placeholder="กรอกเลขประจำตัวสอบ เช่น 1210100001"
+        />
+        <button id="searchBtn" class="btn-primary">ค้นหา</button>
+    </div>
+
+    <div id="statusText" class="status">รอค้นหา...</div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ตำแหน่ง</th>
+            <th>เลขประจำตัวสอบ</th>
+            <th>จังหวัด</th>
+            <th>สนามสอบ</th>
+            <th>อาคาร</th>
+            <th>ชั้น</th>
+            <th>ห้องสอบที่</th>
+        </tr>
+        </thead>
+        <tbody id="resultBody">
+            <tr><td colspan="7" class="no-data">ยังไม่มีข้อมูล</td></tr>
+        </tbody>
+    </table>
+
+    <div class="note">
+        <strong>หมายเหตุ :</strong>
+        ระบบนี้จัดทำขึ้นเพื่อช่วยในการค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2 แบบเบื้องต้น เท่านั้น
+        ข้อมูลอาจมีความผิดพลาด โปรดตรวจสอบความถูกต้องจากไฟล์ประกาศจริงอีกครั้งที่
+        <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank" rel="noopener">
+            คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+        </a>
+    </div>
+</div>
+
+<script>
+    // URL Web App ของคุณ
+    const API_URL = "https://script.google.com/macros/s/AKfycbzM2GT5Lt_T_054PvGgi3u9mgNTgBVBC2cOur7NZCHWEoqRAorzLLwlFw9hD58iIfTyFQ/exec"; // ← แก้ตรงนี้
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // Popup แจ้งเตือนตอนเปิดหน้าเว็บ
+        Swal.fire({
+            icon: 'info',
+            title: 'คำเตือนการใช้งาน',
+            html: `
+                ระบบนี้ช่วยในการค้นหาข้อมูลสถานที่สอบแบบเบื้องต้น เท่านั้น<br>
+                ข้อมูลอาจมีความผิดพลาด โปรดตรวจสอบข้อมูลจากไฟล์ประกาศจริงอีกครั้งที่<br>
+                <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
+                    คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+                </a>
+            `,
+            confirmButtonText: 'รับทราบ'
+        });
+
+        document.getElementById("searchBtn").addEventListener("click", handleSearch);
+        document.getElementById("keywordInput").addEventListener("keyup", (e) => {
+            if (e.key === "Enter") handleSearch();
+        });
+    });
+
+    async function handleSearch() {
+        const keyword = document.getElementById("keywordInput").value.trim();
+        const statusEl = document.getElementById("statusText");
+
+        if (!keyword) {
+            statusEl.textContent = "กรุณากรอกเลขประจำตัวสอบก่อน";
+            Swal.fire({
+                icon: 'warning',
+                title: 'ยังไม่ได้กรอกเลขประจำตัวสอบ',
+                text: 'กรุณากรอกเลขก่อนใช้ระบบค้นหา',
+                confirmButtonText: 'ตกลง'
+            });
+            return;
+        }
+
+        // Popup กำลังค้นหา
+        Swal.fire({
+            title: 'กำลังค้นหา...',
+            html: 'ระบบกำลังดึงข้อมูลจากฐานข้อมูล <br> โปรดรอสักครู่',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            showConfirmButton: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        const url = API_URL
+            + "?field=" + encodeURIComponent("เลขประจำตัวสอบ")
+            + "&keyword=" + encodeURIComponent(keyword);
+
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("HTTP " + res.status);
+
+            const json = await res.json();
+            Swal.close();
+
+            if (json.status !== "ok") {
+                renderRows([]);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: json.message || "ไม่สามารถประมวลผลได้",
+                    confirmButtonText: 'ตกลง'
+                });
+                return;
+            }
+
+            renderRows(json.data);
+            statusEl.textContent = `พบข้อมูล ${json.total} รายการ`;
+
+            if (!json.data || json.data.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ไม่พบข้อมูล',
+                    html: `
+                        ไม่พบเลขประจำตัวสอบที่ค้นหา<br>
+                        โปรดตรวจสอบจากไฟล์ประกาศจริงอีกครั้งที่<br>
+                        <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
+                            คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+                        </a>
+                    `,
+                    confirmButtonText: 'ตกลง'
+                });
+            }
+
+        } catch (err) {
+            Swal.close();
+            statusEl.textContent = "เกิดข้อผิดพลาด: " + err.message;
+            renderRows([]);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'การเชื่อมต่อล้มเหลว',
+                text: 'ไม่สามารถเชื่อมต่อกับ API ได้ โปรดลองใหม่',
+                confirmButtonText: 'ตกลง'
+            });
+        }
+    }
+
+    function renderRows(rows) {
+        const tbody = document.getElementById("resultBody");
+        tbody.innerHTML = "";
+
+        if (!rows || rows.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="no-data">ไม่พบข้อมูล</td></tr>`;
+            return;
+        }
+
+        rows.forEach(item => {
+            const tr = document.createElement("tr");
+
+            add(tr, item["ตำแหน่ง"]);
+            add(tr, item["เลขประจำตัวสอบ"]);
+            add(tr, item["จังหวัด"]);
+            add(tr, item["สนามสอบ"]);
+            add(tr, item["อาคาร"]);
+            add(tr, item["ชั้น"]);
+            add(tr, item["ห้องสอบที่"]);
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function add(tr, text) {
+        const td = document.createElement("td");
+        td.textContent = text ?? "";
+        tr.appendChild(td);
+    }
+</script>
+
+</body>
+</html>
