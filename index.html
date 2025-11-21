@@ -53,7 +53,7 @@
     <div class="note">
         <strong>หมายเหตุ :</strong>
         ระบบนี้จัดทำขึ้นเพื่อช่วยค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2 แบบคร่าว ๆ เท่านั้น  
-        โปรดตรวจสอบกับไฟล์ประกาศจริงที่  
+        โปรดตรวจสอบกับไฟล์ประกาศจริงอีกครั้งที่  
         <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
             คลิกที่นี่
         </a>
@@ -61,15 +61,15 @@
 </div>
 
 <script>
-    const API_URL = "https://script.google.com/macros/s/XXXXXXXXXXXX/exec"; // ← เปลี่ยนเป็น Web App ของคุณ
+    const API_URL = "https://script.google.com/macros/s/AKfycbzM2GT5Lt_T_054PvGgi3u9mgNTgBVBC2cOur7NZCHWEoqRAorzLLwlFw9hD58iIfTyFQ/exec"; // ← เปลี่ยนเป็น Web App ของคุณ
 
     document.addEventListener("DOMContentLoaded", () => {
         Swal.fire({
             icon: 'info',
             title: 'คำเตือนการใช้งาน',
             html: `
-                ระบบนี้ใช้เพื่อค้นหาข้อมูลแบบคร่าว ๆ เท่านั้น<br>
-                โปรดตรวจสอบข้อมูลจากไฟล์ประกาศจริงอีกครั้งที่<br>
+                ระบบนี้ใช้เพื่อช่วยค้นหาข้อมูลแบบคร่าว ๆ เท่านั้น<br>
+                โปรดตรวจสอบข้อมูลจากไฟล์ประกาศจริงที่<br>
                 <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
                     คลิกที่นี่
                 </a>
@@ -91,7 +91,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'ยังไม่ได้กรอกเลขประจำตัวสอบ',
-                text: 'กรุณากรอกเลขก่อน',
+                text: 'กรุณากรอกเลขก่อนทำการค้นหา',
                 confirmButtonText: 'ตกลง'
             });
             return;
@@ -99,13 +99,13 @@
 
         Swal.fire({
             title: 'กำลังค้นหา...',
-            html: 'ระบบกำลังดึงข้อมูล<br>โปรดรอสักครู่',
+            html: 'ระบบกำลังดึงข้อมูลจากฐานข้อมูล<br>โปรดรอสักครู่',
             allowOutsideClick: false,
             showConfirmButton: false,
             didOpen: () => Swal.showLoading()
         });
 
-        const url = `${API_URL}?field=เลขประจำตัวสอบ&keyword=${encodeURIComponent(keyword)}`;
+        const url = `${API_URL}?field=${encodeURIComponent("เลขประจำตัวสอบ")}&keyword=${encodeURIComponent(keyword)}`;
 
         try {
             const res = await fetch(url);
@@ -114,7 +114,7 @@
             const json = await res.json();
             Swal.close();
 
-            renderRows(json.data);
+            renderRows(json.data || []);
             statusEl.textContent = `พบข้อมูล ${json.total} รายการ`;
 
             if (!json.data || json.data.length === 0) {
@@ -131,13 +131,15 @@
                     confirmButtonText: 'ตกลง'
                 });
             }
-
         } catch (err) {
             Swal.close();
+            statusEl.textContent = "เกิดข้อผิดพลาด: " + err.message;
+            renderRows([]);
+
             Swal.fire({
                 icon: 'error',
                 title: 'การเชื่อมต่อล้มเหลว',
-                text: 'โปรดลองใหม่อีกครั้ง',
+                text: 'ไม่สามารถเชื่อมต่อกับ API ได้ โปรดลองใหม่อีกครั้ง',
                 confirmButtonText: 'ตกลง'
             });
         }
@@ -147,27 +149,30 @@
         const tbody = document.getElementById("resultBody");
         tbody.innerHTML = "";
 
-        if (!rows.length) {
+        if (!rows || rows.length === 0) {
             tbody.innerHTML = `<tr><td colspan="7" class="no-data">ไม่พบข้อมูล</td></tr>`;
             return;
         }
 
         rows.forEach(r => {
             const tr = document.createElement("tr");
-            add(tr, r["ตำแหน่ง"]);
-            add(tr, r["เลขประจำตัวสอบ"]);
-            add(tr, r["จังหวัด"]);
-            add(tr, r["สนามสอบ"]);
-            add(tr, r["อาคาร"]);
-            add(tr, r["ชั้น"]);
-            add(tr, r["ห้องสอบที่"]);
+
+            addCell(tr, r["ตำแหน่ง"], "ตำแหน่ง");
+            addCell(tr, r["เลขประจำตัวสอบ"], "เลขประจำตัวสอบ");
+            addCell(tr, r["จังหวัด"], "จังหวัด");
+            addCell(tr, r["สนามสอบ"], "สนามสอบ");
+            addCell(tr, r["อาคาร"], "อาคาร");
+            addCell(tr, r["ชั้น"], "ชั้น");
+            addCell(tr, r["ห้องสอบที่"], "ห้องสอบที่");
+
             tbody.appendChild(tr);
         });
     }
 
-    function add(tr, text) {
+    function addCell(tr, text, label) {
         const td = document.createElement("td");
         td.textContent = text ?? "";
+        td.setAttribute("data-label", label); // ใช้กับการ์ดบนมือถือ
         tr.appendChild(td);
     }
 </script>
