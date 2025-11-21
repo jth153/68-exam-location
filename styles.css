@@ -69,14 +69,14 @@ h1 {
     font-size: 15px;
 }
 
-/* Table Wrapper (Scroll on mobile) */
+/* Table Wrapper */
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
     margin-bottom: 15px;
 }
 
-/* Table */
+/* Table (desktop) */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -123,12 +123,71 @@ tbody tr:hover {
     font-weight: 600;
 }
 
-/* Mobile */
+/* =========================
+   Mobile: การ์ดแนวตั้ง
+   ========================= */
 @media (max-width: 600px) {
+    body {
+        padding: 15px 8px;
+    }
+
     h1 {
         font-size: 1.3rem;
+        margin-bottom: 16px;
     }
-    .btn-primary, .input-text {
+
+    .input-text,
+    .btn-primary {
         width: 100%;
+    }
+
+    .table-wrapper {
+        overflow-x: visible;
+    }
+
+    table {
+        border-radius: 0;
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        background: transparent;
+    }
+
+    thead {
+        display: none; /* ซ่อนหัวตาราง */
+    }
+
+    tbody tr {
+        display: block;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        padding: 10px 12px;
+        margin-bottom: 10px;
+    }
+
+    tbody tr:hover {
+        background: #ffffff;
+    }
+
+    tbody td {
+        display: block;
+        border: none;
+        padding: 4px 0;
+        font-size: 14px;
+    }
+
+    tbody td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 1px;
+    }
+
+    .no-data {
+        box-shadow: none;
+        background: transparent;
+        padding: 10px 0;
     }
 }
