@@ -2,13 +2,13 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8" />
-    <title>ค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2 </title>
+    <title>ค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- ฟอนต์ Sarabun -->
+    <!-- Font Sarabun -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- ไฟล์ CSS -->
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
 
     <!-- SweetAlert2 -->
@@ -18,6 +18,7 @@
 
 <div class="container glass">
     <h1>ค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2</h1>
+
     <div class="search-box">
         <input
             type="text"
@@ -30,55 +31,54 @@
 
     <div id="statusText" class="status">รอค้นหา...</div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ตำแหน่ง</th>
-            <th>เลขประจำตัวสอบ</th>
-            <th>จังหวัด</th>
-            <th>สนามสอบ</th>
-            <th>อาคาร</th>
-            <th>ชั้น</th>
-            <th>ห้องสอบที่</th>
-        </tr>
-        </thead>
-        <tbody id="resultBody">
-            <tr><td colspan="7" class="no-data">ยังไม่มีข้อมูล</td></tr>
-        </tbody>
-    </table>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>ตำแหน่ง</th>
+                <th>เลขประจำตัวสอบ</th>
+                <th>จังหวัด</th>
+                <th>สนามสอบ</th>
+                <th>อาคาร</th>
+                <th>ชั้น</th>
+                <th>ห้องสอบที่</th>
+            </tr>
+            </thead>
+            <tbody id="resultBody">
+                <tr><td colspan="7" class="no-data">ยังไม่มีข้อมูล</td></tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="note">
         <strong>หมายเหตุ :</strong>
-        ระบบนี้จัดทำขึ้นเพื่อช่วยในการค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2 แบบเบื้องต้น เท่านั้น
-        ข้อมูลอาจมีความผิดพลาด โปรดตรวจสอบความถูกต้องจากไฟล์ประกาศจริงอีกครั้งที่
-        <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank" rel="noopener">
-            คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+        ระบบนี้จัดทำขึ้นเพื่อช่วยค้นหาข้อมูลสถานที่สอบ ภาคเหนือ เขต 2 แบบคร่าว ๆ เท่านั้น  
+        โปรดตรวจสอบกับไฟล์ประกาศจริงที่  
+        <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
+            คลิกที่นี่
         </a>
     </div>
 </div>
 
 <script>
-    // URL Web App ของคุณ
-    const API_URL = "https://script.google.com/macros/s/AKfycbzM2GT5Lt_T_054PvGgi3u9mgNTgBVBC2cOur7NZCHWEoqRAorzLLwlFw9hD58iIfTyFQ/exec"; // ← แก้ตรงนี้
+    const API_URL = "https://script.google.com/macros/s/XXXXXXXXXXXX/exec"; // ← เปลี่ยนเป็น Web App ของคุณ
 
     document.addEventListener("DOMContentLoaded", () => {
-
-        // Popup แจ้งเตือนตอนเปิดหน้าเว็บ
         Swal.fire({
             icon: 'info',
             title: 'คำเตือนการใช้งาน',
             html: `
-                ระบบนี้ช่วยในการค้นหาข้อมูลสถานที่สอบแบบเบื้องต้น เท่านั้น<br>
-                ข้อมูลอาจมีความผิดพลาด โปรดตรวจสอบข้อมูลจากไฟล์ประกาศจริงอีกครั้งที่<br>
+                ระบบนี้ใช้เพื่อค้นหาข้อมูลแบบคร่าว ๆ เท่านั้น<br>
+                โปรดตรวจสอบข้อมูลจากไฟล์ประกาศจริงอีกครั้งที่<br>
                 <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
-                    คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+                    คลิกที่นี่
                 </a>
             `,
             confirmButtonText: 'รับทราบ'
         });
 
         document.getElementById("searchBtn").addEventListener("click", handleSearch);
-        document.getElementById("keywordInput").addEventListener("keyup", (e) => {
+        document.getElementById("keywordInput").addEventListener("keyup", e => {
             if (e.key === "Enter") handleSearch();
         });
     });
@@ -88,29 +88,24 @@
         const statusEl = document.getElementById("statusText");
 
         if (!keyword) {
-            statusEl.textContent = "กรุณากรอกเลขประจำตัวสอบก่อน";
             Swal.fire({
                 icon: 'warning',
                 title: 'ยังไม่ได้กรอกเลขประจำตัวสอบ',
-                text: 'กรุณากรอกเลขก่อนใช้ระบบค้นหา',
+                text: 'กรุณากรอกเลขก่อน',
                 confirmButtonText: 'ตกลง'
             });
             return;
         }
 
-        // Popup กำลังค้นหา
         Swal.fire({
             title: 'กำลังค้นหา...',
-            html: 'ระบบกำลังดึงข้อมูลจากฐานข้อมูล <br> โปรดรอสักครู่',
+            html: 'ระบบกำลังดึงข้อมูล<br>โปรดรอสักครู่',
             allowOutsideClick: false,
-            allowEscapeKey: false,
             showConfirmButton: false,
             didOpen: () => Swal.showLoading()
         });
 
-        const url = API_URL
-            + "?field=" + encodeURIComponent("เลขประจำตัวสอบ")
-            + "&keyword=" + encodeURIComponent(keyword);
+        const url = `${API_URL}?field=เลขประจำตัวสอบ&keyword=${encodeURIComponent(keyword)}`;
 
         try {
             const res = await fetch(url);
@@ -118,17 +113,6 @@
 
             const json = await res.json();
             Swal.close();
-
-            if (json.status !== "ok") {
-                renderRows([]);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: json.message || "ไม่สามารถประมวลผลได้",
-                    confirmButtonText: 'ตกลง'
-                });
-                return;
-            }
 
             renderRows(json.data);
             statusEl.textContent = `พบข้อมูล ${json.total} รายการ`;
@@ -141,7 +125,7 @@
                         ไม่พบเลขประจำตัวสอบที่ค้นหา<br>
                         โปรดตรวจสอบจากไฟล์ประกาศจริงอีกครั้งที่<br>
                         <a href="https://drive.google.com/file/d/1eqxkGzsW6e2NSL-1lXTyBbJxEY52feLe/view" target="_blank">
-                            คลิกที่นี่เพื่อเปิดไฟล์ประกาศ
+                            คลิกที่นี่
                         </a>
                     `,
                     confirmButtonText: 'ตกลง'
@@ -150,13 +134,10 @@
 
         } catch (err) {
             Swal.close();
-            statusEl.textContent = "เกิดข้อผิดพลาด: " + err.message;
-            renderRows([]);
-
             Swal.fire({
                 icon: 'error',
                 title: 'การเชื่อมต่อล้มเหลว',
-                text: 'ไม่สามารถเชื่อมต่อกับ API ได้ โปรดลองใหม่',
+                text: 'โปรดลองใหม่อีกครั้ง',
                 confirmButtonText: 'ตกลง'
             });
         }
@@ -166,22 +147,20 @@
         const tbody = document.getElementById("resultBody");
         tbody.innerHTML = "";
 
-        if (!rows || rows.length === 0) {
+        if (!rows.length) {
             tbody.innerHTML = `<tr><td colspan="7" class="no-data">ไม่พบข้อมูล</td></tr>`;
             return;
         }
 
-        rows.forEach(item => {
+        rows.forEach(r => {
             const tr = document.createElement("tr");
-
-            add(tr, item["ตำแหน่ง"]);
-            add(tr, item["เลขประจำตัวสอบ"]);
-            add(tr, item["จังหวัด"]);
-            add(tr, item["สนามสอบ"]);
-            add(tr, item["อาคาร"]);
-            add(tr, item["ชั้น"]);
-            add(tr, item["ห้องสอบที่"]);
-
+            add(tr, r["ตำแหน่ง"]);
+            add(tr, r["เลขประจำตัวสอบ"]);
+            add(tr, r["จังหวัด"]);
+            add(tr, r["สนามสอบ"]);
+            add(tr, r["อาคาร"]);
+            add(tr, r["ชั้น"]);
+            add(tr, r["ห้องสอบที่"]);
             tbody.appendChild(tr);
         });
     }
@@ -195,4 +174,3 @@
 
 </body>
 </html>
-
