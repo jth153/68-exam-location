@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SONIC-PRO K-9000 | Skeuomorphic Karaoke Console</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Sarabun:wght@400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wood-dark: #2c1608;
+      --wood-mid: #4e2a14;
+      --wood-light: #6d3d1e;
+      --metal-light: #d6dbe0;
+      --metal-mid: #a7afb7;
+      --metal-dark: #6f7780;
+      --chassis-dark: #22262a;
+      --led-green: #39ff14;
+      --led-amber: #ffaa00;
+      --led-cyan: #00e5ff;
+      --led-red: #ff3131;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 25%, #2b2f36 0%, #121417 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: 'Sarabun', sans-serif;
+      color: #1f2326;
+    }
+
+    /* Main Wood & Brushed Aluminum Console */
+    .console-wrapper {
+      display: flex;
+      max-width: 1260px;
+      width: 100%;
+      border-radius: 16px;
+      box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.85),
+        0 0 0 2px #111,
+        inset 0 2px 3px rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+    }
+
+    .wood-panel {
+      width: 28px;
+      flex-shrink: 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          rgba(0,0,0,0.18) 0px,
+          rgba(0,0,0,0.03) 3px,
+          rgba(255,255,255,0.05) 6px,
+          rgba(0,0,0,0.22) 11px
+        ),
+        linear-gradient(180deg, var(--wood-light) 0%, var(--wood-mid) 45%, var(--wood-dark) 100%);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.7);
+    }
+
+    .wood-panel.left { border-right: 2px solid #1a0d04; }
+    .wood-panel.right { border-left: 2px solid #1a0d04; }
+
+    /* Brushed Aluminum Faceplate */
+    .chassis {
+      flex: 1;
+      padding: 22px 26px 26px;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,0.04) 0px,
+          rgba(255,255,255,0.04) 1px,
+          rgba(0,0,0,0.03) 2px,
+          rgba(0,0,0,0.03) 3px
+        ),
+        linear-gradient(145deg, #cfd5db 0%, #aeb6bf 48%, #8f98a2 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Corner Screws */
+    .screw {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #eef2f5, #7d858e 70%, #3d4247 100%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.8);
+      position: relative;
+      display: inline-block;
+    }
+    .screw::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 2px;
+      right: 2px;
+      height: 1.5px;
+      background: #3b4045;
+      transform: translateY(-50%) rotate(-32deg);
+    }
+
+    .engraved {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #262b30;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+      text-transform: uppercase;
+    }
+
+    /* TOP DECK: Slot-loading YouTube Receiver */
+    .top-deck {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      background: linear-gradient(180deg, #b8c0c8 0%, #99a2ac 100%);
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid #6c747d;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.75),
+        0 3px 6px rgba(0,0,0,0.28);
+    }
+
+    .brand-plate {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 210px;
+    }
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.15rem;
+      color: #1c2024;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.75);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .power-led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--led-green);
+      box-shadow: 0 0 8px var(--led-green), inset 0 1px 2px #fff;
+    }
+    .brand-sub {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #3c434a;
+      letter-spacing: 1.5px;
+    }
+
+    /* Recessed LED Slot Input */
+    .slot-receiver {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1a1d20;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 2px solid #596068;
+      box-shadow:
+        inset 0 4px 10px rgba(0,0,0,0.9),
+        0 1px 0 rgba(255,255,255,0.6);
+    }
+
+    .slot-lip {
+      width: 10px;
+      height: 36px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #090a0b, #2c3136);
+      border-right: 1px solid #444;
+    }
+
+    .url-input {
+      flex: 1;
+      background: #0a140d;
+      border: 1px solid #1e3b24;
+      border-radius: 5px;
+      padding: 10px 14px;
+      color: var(--led-green);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.98rem;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 6px rgba(57, 255, 20, 0.65);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.95);
+      outline: none;
+      user-select: text;
+    }
+    .url-input::placeholder {
+      color: rgba(57, 255, 20, 0.42);
+    }
+
+    .deck-btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.8px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .btn-load {
+      background: linear-gradient(180deg, #29d8ff 0%, #008bb3 100%);
+      color: #041d26;
+      border: 1px solid #005873;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.75),
+        0 4px 0 #004960,
+        0 6px 10px rgba(0,0,0,0.5);
+    }
+    .btn-load:active {
+      transform: translateY(3px);
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,0.4),
+        0 1px 0 #004960;
+    }
+
+    .btn-queue {
+      background: linear-gradient(180deg, #ffb938 0%, #cc7a00 100%);
+      color: #241400;
+      border: 1px solid #804d00;
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.75),
+        0 4px 0 #6b4000,
+        0 6px 10px rgba(0,0,0,0.5);
+    }
+    .btn-queue:active {
+      transform: translateY(3px);
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,0.4),
+        0 1px 0 #6b4000;
+    }
+
+    /* MIDDLE SECTION: CRT Monitor (68%) + Clipboard Queue (32%) */
+    .main-stage {
+      display: grid;
+      grid-template-columns: 1.9fr 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    /* CRT Bezel & Video Screen */
+    .monitor-unit {
+      background: linear-gradient(145deg, #2a2e33 0%, #17191c 100%);
+      border-radius: 14px;
+      padding: 18px 20px 16px;
+      border: 2px solid #444a52;
+      box-shadow:
+        inset 0 2px 3px rgba(255,255,255,0.18),
+        0 8px 18px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .crt-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #050607;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow:
+        inset 0 6px 18px rgba(0,0,0,1),
+        0 1px 0 rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+
+    .crt-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #yt-player-container, #yt-player {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Subtle CRT Glass Glare (Pointer-events none so YouTube controls remain clickable!) */
+    .crt-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(125deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 32%, transparent 55%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px);
+      box-shadow: inset 0 0 28px rgba(0,0,0,0.75);
+      border-radius: 8px;
+      z-index: 5;
+    }
+
+    /* Fallback Error Banner if a specific video blocks embedding */
+    .embed-alert {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      background: rgba(20, 12, 12, 0.92);
+      border: 1px solid #ff4d4d;
+      color: #ffd6d6;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 10;
+    }
+    .embed-alert.show { display: flex; }
+    .embed-alert a {
+      background: #ff3131;
+      color: #fff;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .monitor-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .crt-badge {
+      background: linear-gradient(180deg, #cfd5dc, #8b939c);
+      color: #1a1d20;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgba(0,0,0,0.6);
+      white-space: nowrap;
+    }
+
+    .now-playing-led {
+      flex: 1;
+      background: #120d04;
+      border: 1px solid #3c2a0b;
+      border-radius: 5px;
+      padding: 6px 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.88rem;
+      color: var(--led-amber);
+      text-shadow: 0 0 6px rgba(255, 170, 0, 0.65);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+    }
+
+    /* Mechanical Transport Controls */
+    .transport-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      background: #879099;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #596068;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
+    }
+
+    .mech-btn {
+      cursor: pointer;
+      background: linear-gradient(180deg, #eef2f6 0%, #c1c8d0 60%, #a5aeb7 100%);
+      border: 1px solid #5b626a;
+      border-radius: 6px;
+      padding: 9px 6px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      box-shadow:
+        inset 0 1px 0 #fff,
+        0 4px 0 #555c63,
+        0 6px 8px rgba(0,0,0,0.35);
+      transition: all 0.08s ease;
+    }
+
+    .mech-btn .led-bar {
+      width: 22px;
+      height: 4px;
+      border-radius: 2px;
+      background: #484e54;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .mech-btn.active {
+      transform: translateY(3px);
+      background: linear-gradient(180deg, #cfd6dd 0%, #aeb6bf 100%);
+      box-shadow:
+        inset 0 2px 4px rgba(0,0,0,0.35),
+        0 1px 0 #555c63;
+    }
+    .mech-btn.active .led-bar {
+      background: var(--led-green);
+      box-shadow: 0 0 8px var(--led-green);
+    }
+    .mech-btn#btn-stop.active .led-bar {
+      background: var(--led-red);
+      box-shadow: 0 0 8px var(--led-red);
+    }
+
+    .mech-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: #24292e;
+    }
+    .mech-btn span {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #24292e;
+    }
+
+    /* RIGHT PANEL: Physical Clipboard Cue Sheet */
+    .clipboard-board {
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,0.08) 0px,
+          rgba(255,255,255,0.04) 4px,
+          rgba(0,0,0,0.12) 9px
+        ),
+        linear-gradient(135deg, #6e4223 0%, #4d2c15 100%);
+      border-radius: 12px;
+      padding: 24px 14px 14px;
+      border: 2px solid #2d180a;
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.25),
+        0 8px 18px rgba(0,0,0,0.4);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Metallic Clip at Top */
+    .metal-clip {
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 118px;
+      height: 28px;
+      background: linear-gradient(180deg, #e5eaef 0%, #9aa3ac 50%, #6d757d 100%);
+      border-radius: 6px 6px 4px 4px;
+      border: 1px solid #454b52;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.5), inset 0 1px 0 #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 800;
+      color: #25292e;
+      letter-spacing: 1px;
+      z-index: 4;
+    }
+
+    .paper-sheet {
+      flex: 1;
+      background:
+        repeating-linear-gradient(
+          180deg,
+          #fcfaf2 0px,
+          #fcfaf2 31px,
+          #c6d8e8 32px
+        );
+      border-radius: 4px;
+      padding: 16px 12px 12px 26px;
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.45),
+        inset 0 0 18px rgba(185, 165, 120, 0.25);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      max-height: 430px;
+    }
+
+    /* Red Margin Line on Paper */
+    .paper-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 18px;
+      width: 1.5px;
+      background: rgba(220, 75, 75, 0.55);
+    }
+
+    .paper-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #2b3036;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .paper-title {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 1.05rem;
+      color: #1f2429;
+      letter-spacing: 0.5px;
+    }
+
+    .queue-count {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      background: #24292e;
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .queue-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .queue-card {
+      background: #fffdf7;
+      border: 1px solid #c9c2b2;
+      border-left: 4px solid #7c858e;
+      border-radius: 5px;
+      padding: 7px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12);
+      cursor: pointer;
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+    .queue-card:hover {
+      background: #f5f9ff;
+      transform: translateX(2px);
+    }
+    .queue-card.playing {
+      background: #fff6cf;
+      border-color: #d4a017;
+      border-left: 4px solid #e67e00;
+      box-shadow: 0 2px 6px rgba(230, 126, 0, 0.25);
+    }
+
+    .q-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .q-badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #6b7280;
+    }
+    .queue-card.playing .q-badge {
+      color: #c25900;
+    }
+    .q-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #1e2226;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .q-actions {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .q-mini-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid #9aa2ab;
+      background: linear-gradient(180deg, #ffffff, #d5dce3);
+      color: #2b3036;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .q-mini-btn:hover { background: #e8eef5; }
+    .q-mini-btn.del:hover {
+      background: #ffe0e0;
+      border-color: #d9534f;
+      color: #b52b27;
+    }
+
+    /* BOTTOM DECK: Mixer, Knobs, VU Meters, MPC Pads */
+    .mixer-deck {
+      display: grid;
+      grid-template-columns: 1.35fr 0.85fr 1fr 1.15fr;
+      gap: 16px;
+      background: linear-gradient(180deg, #b5bec7 0%, #939ca6 100%);
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #676f78;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.75),
+        0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .module-box {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(60, 68, 76, 0.38);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .module-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #262b30;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.65);
+      border-bottom: 1px solid rgba(0,0,0,0.18);
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Rotary Knobs */
+    .knobs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      place-items: center;
+    }
+
+    .knob-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .knob-dial {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background:
+        conic-gradient(from 0deg, #7d858e, #dfe4e8, #6b737c, #cfd5dc, #7d858e);
+      padding: 5px;
+      box-shadow:
+        0 5px 10px rgba(0,0,0,0.5),
+        inset 0 1px 2px rgba(255,255,255,0.9);
+      cursor: ns-resize;
+      position: relative;
+    }
+
+    .knob-cap {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #4b5259, #1f2327 85%);
+      border: 1px solid #14171a;
+      position: relative;
+      transform: rotate(0deg);
+    }
+
+    .knob-indicator {
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 11px;
+      border-radius: 2px;
+      background: var(--led-cyan);
+      box-shadow: 0 0 6px var(--led-cyan);
+    }
+
+    .knob-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #23272b;
+      text-align: center;
+    }
+    .knob-val {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: #111;
+      background: rgba(255,255,255,0.45);
+      padding: 0 5px;
+      border-radius: 3px;
+    }
+
+    /* EQ Faders */
+    .faders-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 128px;
+      padding-top: 6px;
+    }
+
+    .fader-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+    }
+
+    .fader-track {
+      flex: 1;
+      width: 10px;
+      background: #181b1e;
+      border-radius: 5px;
+      box-shadow: inset 0 2px 5px #000, 0 1px 0 rgba(255,255,255,0.6);
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .fader-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 96px;
+      height: 24px;
+      background: transparent;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      position: absolute;
+      top: 34px;
+      cursor: pointer;
+    }
+
+    .fader-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 26px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #8b939c 0%, #eef2f5 50%, #7d858e 100%);
+      border: 1px solid #2d3237;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.65);
+    }
+
+    /* Analog VU Meters & Vocal Toggle */
+    .vu-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .vu-meter {
+      background: linear-gradient(180deg, #fff3c4 0%, #f5d87d 100%);
+      border: 2px solid #2b3036;
+      border-radius: 6px;
+      height: 68px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 3px 8px rgba(0,0,0,0.45),
+        inset 0 0 14px rgba(255, 166, 0, 0.45);
+    }
+
+    .vu-scale {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      height: 26px;
+      border-top: 2px solid #333;
+      border-radius: 50% 50% 0 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: #222;
+    }
+    .vu-scale span.red { color: #c91818; }
+
+    .vu-needle {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      width: 2px;
+      height: 54px;
+      background: #d91c1c;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotate(-38deg);
+      transition: transform 0.09s ease-out;
+      box-shadow: 1px 0 2px rgba(0,0,0,0.35);
+    }
+
+    .vu-cap {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #222;
+    }
+
+    .vocal-toggle-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.12);
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch {
+      width: 48px;
+      height: 24px;
+      background: #1f2326;
+      border-radius: 12px;
+      padding: 3px;
+      cursor: pointer;
+      box-shadow: inset 0 2px 5px #000, 0 1px 0 rgba(255,255,255,0.6);
+      position: relative;
+    }
+
+    .toggle-lever {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, #9aa2ab);
+      transition: transform 0.18s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .toggle-switch.on .toggle-lever {
+      transform: translateX(24px);
+      background: radial-gradient(circle at 35% 35%, #b8ffaa, #39ff14);
+      box-shadow: 0 0 10px var(--led-green);
+    }
+
+    /* MPC Silicone Soundboard Pads */
+    .mpc-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      flex: 1;
+    }
+
+    .mpc-pad {
+      cursor: pointer;
+      border-radius: 7px;
+      border: 2px solid #2b3036;
+      background: linear-gradient(145deg, #4b5259 0%, #2f3439 100%);
+      color: #e6ebf0;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      box-shadow:
+        inset 0 2px 2px rgba(255,255,255,0.25),
+        0 4px 0 #181b1e,
+        0 6px 8px rgba(0,0,0,0.4);
+      transition: all 0.06s ease;
+    }
+
+    .mpc-pad:active, .mpc-pad.lit {
+      transform: translateY(3px);
+      box-shadow:
+        inset 0 0 14px rgba(0, 229, 255, 0.85),
+        0 1px 0 #181b1e;
+      border-color: var(--led-cyan);
+      color: #fff;
+      text-shadow: 0 0 8px var(--led-cyan);
+    }
+
+    @media (max-width: 1024px) {
+      .main-stage { grid-template-columns: 1fr; }
+      .mixer-deck { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .top-deck { flex-direction: column; align-items: stretch; }
+      .mixer-deck { grid-template-columns: 1fr; }
+      .wood-panel { width: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="console-wrapper">
+  <div class="wood-panel left"></div>
+
+  <div class="chassis">
+    <!-- TOP DECK: YouTube URL Slot Receiver -->
+    <div class="top-deck">
+      <div class="brand-plate">
+        <div class="brand-title">
+          <span class="power-led"></span>
+          SONIC-PRO K-9000
+        </div>
+        <div class="brand-sub">STUDIO YOUTUBE KARAOKE CONSOLE</div>
+      </div>
+
+      <div class="slot-receiver">
+        <div class="slot-lip"></div>
+        <input
+          type="text"
+          id="yt-url-input"
+          class="url-input"
+          placeholder="PASTE YOUTUBE LINK OR VIDEO ID HERE..."
+          autocomplete="off"
+        />
+        <button class="deck-btn btn-load" id="btn-play-now" title="เล่นเพลงนี้ทันที">▶ PLAY NOW</button>
+        <button class="deck-btn btn-queue" id="btn-add-queue" title="เพิ่มลงในคิวเพลง">+ QUEUE</button>
+      </div>
+    </div>
+
+    <!-- MIDDLE STAGE: CRT Monitor + Clipboard Queue -->
+    <div class="main-stage">
+      <!-- CRT Studio Monitor -->
+      <div class="monitor-unit">
+        <div class="crt-frame">
+          <div class="crt-screen">
+            <div id="yt-player-container">
+              <div id="yt-player"></div>
+            </div>
+            <div class="crt-glare"></div>
+
+            <!-- Fallback Alert if YouTube video restricts embedding -->
+            <div class="embed-alert" id="embed-alert">
+              <span>⚠️ วิดีโอนี้ถูกเจ้าของช่องปิดกั้นการเล่นนอก YouTube (Error 150/153)</span>
+              <a id="open-yt-ext" href="https://www.youtube.com" target="_blank" rel="noopener">เปิดบน YouTube ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="monitor-footer">
+          <span class="screw"></span>
+          <div class="crt-badge">TRINITRON STUDIO CRT</div>
+          <div class="now-playing-led" id="led-marquee">READY — SELECT A TRACK OR PASTE YOUTUBE URL</div>
+          <span class="screw"></span>
+        </div>
+
+        <!-- Mechanical Transport Buttons -->
+        <div class="transport-bar">
+          <button class="mech-btn active" id="btn-play">
+            <div class="led-bar"></div>
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <span>PLAY</span>
+          </button>
+          <button class="mech-btn" id="btn-pause">
+            <div class="led-bar"></div>
+            <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <span>PAUSE</span>
+          </button>
+          <button class="mech-btn" id="btn-stop">
+            <div class="led-bar"></div>
+            <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+            <span>STOP</span>
+          </button>
+          <button class="mech-btn" id="btn-replay">
+            <div class="led-bar"></div>
+            <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            <span>REPLAY</span>
+          </button>
+          <button class="mech-btn" id="btn-next">
+            <div class="led-bar"></div>
+            <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            <span>NEXT</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clipboard Cue Sheet -->
+      <div class="clipboard-board">
+        <div class="metal-clip">CUE SHEET</div>
+        <div class="paper-sheet">
+          <div class="paper-header">
+            <div class="paper-title">KARAOKE QUEUE</div>
+            <div class="queue-count" id="queue-count">4 TRACKS</div>
+          </div>
+          <div class="queue-list" id="queue-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM DECK: Audio Mixer & Effects -->
+    <div class="mixer-deck">
+      <!-- 1. Rotary Knobs -->
+      <div class="module-box">
+        <div class="module-title">
+          <span>ROTARY MIXER</span>
+          <span>DRAG ↕</span>
+        </div>
+        <div class="knobs-grid">
+          <div class="knob-unit">
+            <div class="knob-dial" data-knob="master" data-min="0" data-max="100" data-val="85">
+              <div class="knob-cap"><div class="knob-indicator"></div></div>
+            </div>
+            <div class="knob-label">MASTER VOL</div>
+            <div class="knob-val" id="val-master">85%</div>
+          </div>
+
+          <div class="knob-unit">
+            <div class="knob-dial" data-knob="music" data-min="0" data-max="100" data-val="80">
+              <div class="knob-cap"><div class="knob-indicator"></div></div>
+            </div>
+            <div class="knob-label">MUSIC VOL</div>
+            <div class="knob-val" id="val-music">80%</div>
+          </div>
+
+          <div class="knob-unit">
+            <div class="knob-dial" data-knob="echo" data-min="0" data-max="100" data-val="40">
+              <div class="knob-cap"><div class="knob-indicator"></div></div>
+            </div>
+            <div class="knob-label">ECHO / REV</div>
+            <div class="knob-val" id="val-echo">40%</div>
+          </div>
+
+          <div class="knob-unit">
+            <div class="knob-dial" data-knob="key" data-min="-6" data-max="6" data-val="0">
+              <div class="knob-cap"><div class="knob-indicator"></div></div>
+            </div>
+            <div class="knob-label">KEY SHIFT</div>
+            <div class="knob-val" id="val-key">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 3-Band EQ Faders -->
+      <div class="module-box">
+        <div class="module-title">
+          <span>3-BAND EQ</span>
+          <span>dB</span>
+        </div>
+        <div class="faders-row">
+          <div class="fader-col">
+            <div class="fader-track"><input type="range" class="fader-range" min="-12" max="12" value="3"></div>
+            <span class="knob-label">BASS</span>
+          </div>
+          <div class="fader-col">
+            <div class="fader-track"><input type="range" class="fader-range" min="-12" max="12" value="0"></div>
+            <span class="knob-label">MID</span>
+          </div>
+          <div class="fader-col">
+            <div class="fader-track"><input type="range" class="fader-range" min="-12" max="12" value="4"></div>
+            <span class="knob-label">TREBLE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Analog VU Meters & Vocal Remover -->
+      <div class="module-box">
+        <div class="module-title">
+          <span>OUTPUT LEVEL</span>
+          <span>L / R</span>
+        </div>
+        <div class="vu-container">
+          <div class="vu-meter">
+            <div class="vu-scale"><span>-20</span><span>0</span><span class="red">+3</span></div>
+            <div class="vu-needle" id="vu-left"></div>
+            <div class="vu-cap"></div>
+          </div>
+          <div class="vu-meter">
+            <div class="vu-scale"><span>-20</span><span>0</span><span class="red">+3</span></div>
+            <div class="vu-needle" id="vu-right"></div>
+            <div class="vu-cap"></div>
+          </div>
+        </div>
+
+        <div class="vocal-toggle-box">
+          <div>
+            <div class="engraved" style="font-size:0.68rem;">VOCAL REMOVER</div>
+            <div style="font-size:0.68rem; color:#2b3036;" id="vocal-status">OFF (ORIGINAL)</div>
+          </div>
+          <div class="toggle-switch" id="vocal-toggle">
+            <div class="toggle-lever"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Stage SFX Soundboard -->
+      <div class="module-box">
+        <div class="module-title">
+          <span>STAGE SFX PADS</span>
+          <span>MPC</span>
+        </div>
+        <div class="mpc-grid">
+          <button class="mpc-pad" data-sfx="applause">👏<span>APPLAUSE</span></button>
+          <button class="mpc-pad" data-sfx="cheer">🎉<span>CHEER</span></button>
+          <button class="mpc-pad" data-sfx="airhorn">📯<span>AIR HORN</span></button>
+          <button class="mpc-pad" data-sfx="drumroll">🥁<span>DRUMROLL</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wood-panel right"></div>
+</div>
+
+<!-- Official YouTube IFrame Player API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+  // --- 1. Web Audio API Synthesizer for Tactile Clicks & Stage SFX ---
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playMechanicalClick(freq = 180, duration = 0.035) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + duration);
+    gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  }
+
+  function triggerStageSfx(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+
+    if (type === 'airhorn') {
+      [480, 600].forEach(f => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now);
+        osc.frequency.linearRampToValueAtTime(f * 0.96, now + 0.55);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.6);
+      });
+    } else if (type === 'cheer') {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + idx * 0.06);
+        gain.gain.setValueAtTime(0.12, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.45);
+      });
+    } else {
+      // Filtered white noise burst for Applause / Drumroll
+      const bufferSize = audioCtx.sampleRate * (type === 'drumroll' ? 0.9 : 1.2);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        const env = type === 'drumroll'
+          ? Math.abs(Math.sin(i / 450)) * (i / bufferSize)
+          : Math.sin((i / bufferSize) * Math.PI);
+        data[i] = (Math.random() * 2 - 1) * env;
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = type === 'drumroll' ? 320 : 1200;
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.28;
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(now);
+    }
+  }
+
+  // --- 2. Playlist State (Embed-friendly Karaoke Tracks) ---
+  let playlist = [
+    { id: 'fJ9rUzIMcZQ', title: 'Queen - Bohemian Rhapsody (Official / Sing-Along)' },
+    { id: '4fndeDfaWCg', title: 'Backstreet Boys - I Want It That Way' },
+    { id: 'kJQP7kiw5Fk', title: 'Luis Fonsi - Despacito ft. Daddy Yankee' },
+    { id: 'dQw4w9WgXcQ', title: 'Rick Astley - Never Gonna Give You Up' }
+  ];
+  let currentIndex = 0;
+  let ytPlayer = null;
+  let isPlaying = false;
+  let masterVol = 85;
+  let musicVol = 80;
+
+  // Extract YouTube Video ID from any URL format (watch, youtu.be, shorts, embed, live, or raw 11-char ID)
+  function extractVideoId(input) {
+    const trimmed = input.trim();
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed;
+    const regex = /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = trimmed.match(regex);
+    return match ? match[1] : null;
+  }
+
+  // Fetch real video title via noembed (no API key needed)
+  async function fetchVideoTitle(videoId) {
+    try {
+      const res = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+      const data = await res.json();
+      if (data && data.title) return data.title;
+    } catch (e) {}
+    return `YouTube Karaoke (${videoId})`;
+  }
+
+  // --- 3. YouTube IFrame Player API Initialization (Fixes Error 153) ---
+  window.onYouTubeIframeAPIReady = function () {
+    const playerVars = {
+      autoplay: 0,
+      controls: 1,
+      rel: 0,
+      modestbranding: 1,
+      playsinline: 1,
+      fs: 1
+    };
+
+    // Only attach origin when hosted over http/https (prevents Error 153 in sandbox/file origins)
+    if (window.location.protocol.startsWith('http') && window.location.hostname) {
+      playerVars.origin = window.location.origin;
+    }
+
+    ytPlayer = new YT.Player('yt-player', {
+      videoId: playlist[currentIndex].id,
+      playerVars: playerVars,
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+        onError: onPlayerError
+      }
+    });
+  };
+
+  function onPlayerReady() {
+    applyVolume();
+    updateLedDisplay(`READY: ${playlist[currentIndex].title}`);
+    renderQueue();
+  }
+
+  function onPlayerStateChange(event) {
+    const alertBox = document.getElementById('embed-alert');
+    if (event.data === YT.PlayerState.PLAYING) {
+      isPlaying = true;
+      alertBox.classList.remove('show');
+      setTransportActive('btn-play');
+
+      // Update title from player metadata if available
+      const data = ytPlayer.getVideoData ? ytPlayer.getVideoData() : null;
+      if (data && data.title && playlist[currentIndex]) {
+        playlist[currentIndex].title = data.title;
+        renderQueue();
+      }
+      updateLedDisplay(`ON AIR: ${playlist[currentIndex]?.title || 'PLAYING'}`);
+    } else if (event.data === YT.PlayerState.PAUSED) {
+      isPlaying = false;
+      setTransportActive('btn-pause');
+      updateLedDisplay(`PAUSED: ${playlist[currentIndex]?.title || ''}`);
+    } else if (event.data === YT.PlayerState.ENDED) {
+      isPlaying = false;
+      playNextTrack();
+    }
+  }
+
+  function onPlayerError(event) {
+    isPlaying = false;
+    const vid = playlist[currentIndex]?.id || '';
+    const alertBox = document.getElementById('embed-alert');
+    const extLink = document.getElementById('open-yt-ext');
+    extLink.href = `https://www.youtube.com/watch?v=${vid}`;
+    alertBox.classList.add('show');
+    updateLedDisplay(`EMBED RESTRICTED (ERR ${event.data}) — TRY ANOTHER KARAOKE LINK`);
+  }
+
+  function loadTrack(index, autoPlay = true) {
+    if (!playlist[index]) return;
+    currentIndex = index;
+    const track = playlist[currentIndex];
+    document.getElementById('embed-alert').classList.remove('show');
+    updateLedDisplay(`LOADING: ${track.title}...`);
+    renderQueue();
+
+    if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+      if (autoPlay) {
+        ytPlayer.loadVideoById(track.id);
+      } else {
+        ytPlayer.cueVideoById(track.id);
+      }
+    }
+  }
+
+  function playNextTrack() {
+    if (playlist.length === 0) return;
+    const nextIdx = (currentIndex + 1) % playlist.length;
+    loadTrack(nextIdx, true);
+  }
+
+  function applyVolume() {
+    if (ytPlayer && typeof ytPlayer.setVolume === 'function') {
+      const effectiveVol = Math.round((masterVol / 100) * musicVol);
+      ytPlayer.setVolume(effectiveVol);
+    }
+  }
+
+  function updateLedDisplay(text) {
+    document.getElementById('led-marquee').textContent = text.toUpperCase();
+  }
+
+  function setTransportActive(btnId) {
+    document.querySelectorAll('.mech-btn').forEach(b => b.classList.remove('active'));
+    const target = document.getElementById(btnId);
+    if (target) target.classList.add('active');
+  }
+
+  // --- 4. Queue Rendering & Actions ---
+  function renderQueue() {
+    const listEl = document.getElementById('queue-list');
+    document.getElementById('queue-count').textContent = `${playlist.length} TRACKS`;
+    listEl.innerHTML = '';
+
+    playlist.forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = `queue-card ${idx === currentIndex ? 'playing' : ''}`;
+      card.innerHTML = `
+        <div class="q-info">
+          <div class="q-badge">#${String(idx + 1).padStart(2, '0')} ${idx === currentIndex ? '• ON AIR' : ''}</div>
+          <div class="q-title" title="${item.title}">${item.title}</div>
+        </div>
+        <div class="q-actions">
+          <button class="q-mini-btn" data-act="up" title="เลื่อนขึ้น">▲</button>
+          <button class="q-mini-btn" data-act="down" title="เลื่อนลง">▼</button>
+          <button class="q-mini-btn del" data-act="del" title="ลบออกจากคิว">✕</button>
+        </div>
+      `;
+
+      card.addEventListener('click', (e) => {
+        const act = e.target.dataset.act;
+        if (act) {
+          e.stopPropagation();
+          playMechanicalClick(220);
+          if (act === 'up' && idx > 0) {
+            [playlist[idx - 1], playlist[idx]] = [playlist[idx], playlist[idx - 1]];
+            if (currentIndex === idx) currentIndex--;
+            else if (currentIndex === idx - 1) currentIndex++;
+            renderQueue();
+          } else if (act === 'down' && idx < playlist.length - 1) {
+            [playlist[idx + 1], playlist[idx]] = [playlist[idx], playlist[idx + 1]];
+            if (currentIndex === idx) currentIndex++;
+            else if (currentIndex === idx + 1) currentIndex--;
+            renderQueue();
+          } else if (act === 'del') {
+            playlist.splice(idx, 1);
+            if (currentIndex >= playlist.length) currentIndex = Math.max(0, playlist.length - 1);
+            renderQueue();
+          }
+          return;
+        }
+        playMechanicalClick(190);
+        loadTrack(idx, true);
+      });
+
+      listEl.appendChild(card);
+    });
+  }
+
+  // --- 5. Top Deck Input Handlers ---
+  async function handleUrlSubmit(playImmediately) {
+    playMechanicalClick(240);
+    const input = document.getElementById('yt-url-input');
+    const vid = extractVideoId(input.value);
+    if (!vid) {
+      updateLedDisplay('INVALID YOUTUBE LINK — PLEASE CHECK URL');
+      return;
+    }
+
+    input.value = '';
+    updateLedDisplay(`FETCHING TRACK INFO (${vid})...`);
+    const title = await fetchVideoTitle(vid);
+
+    if (playImmediately) {
+      playlist.splice(currentIndex, 0, { id: vid, title });
+      loadTrack(currentIndex, true);
+    } else {
+      playlist.push({ id: vid, title });
+      renderQueue();
+      updateLedDisplay(`ADDED TO QUEUE: ${title}`);
+    }
+  }
+
+  document.getElementById('btn-play-now').addEventListener('click', () => handleUrlSubmit(true));
+  document.getElementById('btn-add-queue').addEventListener('click', () => handleUrlSubmit(false));
+  document.getElementById('yt-url-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleUrlSubmit(true);
+  });
+
+  // --- 6. Transport Button Listeners ---
+  document.getElementById('btn-play').addEventListener('click', () => {
+    playMechanicalClick(170);
+    setTransportActive('btn-play');
+    if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+  });
+
+  document.getElementById('btn-pause').addEventListener('click', () => {
+    playMechanicalClick(150);
+    setTransportActive('btn-pause');
+    if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+  });
+
+  document.getElementById('btn-stop').addEventListener('click', () => {
+    playMechanicalClick(130);
+    setTransportActive('btn-stop');
+    isPlaying = false;
+    if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+    updateLedDisplay('STOPPED');
+  });
+
+  document.getElementById('btn-replay').addEventListener('click', () => {
+    playMechanicalClick(210);
+    setTransportActive('btn-play');
+    if (ytPlayer && ytPlayer.seekTo) {
+      ytPlayer.seekTo(0, true);
+      ytPlayer.playVideo();
+    }
+  });
+
+  document.getElementById('btn-next').addEventListener('click', () => {
+    playMechanicalClick(210);
+    playNextTrack();
+  });
+
+  // --- 7. Interactive Rotary Knobs (Drag Up/Down) ---
+  document.querySelectorAll('.knob-dial').forEach(dial => {
+    const cap = dial.querySelector('.knob-cap');
+    const name = dial.dataset.knob;
+    const min = parseFloat(dial.dataset.min);
+    const max = parseFloat(dial.dataset.max);
+    let val = parseFloat(dial.dataset.val);
+
+    function updateKnobVisual() {
+      const ratio = (val - min) / (max - min);
+      const deg = -135 + ratio * 270;
+      cap.style.transform = `rotate(${deg}deg)`;
+
+      const labelEl = document.getElementById(`val-${name}`);
+      if (name === 'key') {
+        labelEl.textContent = val > 0 ? `+${val}` : `${val}`;
+      } else {
+        labelEl.textContent = `${Math.round(val)}%`;
+      }
+
+      if (name === 'master') { masterVol = val; applyVolume(); }
+      if (name === 'music') { musicVol = val; applyVolume(); }
+    }
+
+    updateKnobVisual();
+
+    let dragging = false;
+    let startY = 0;
+    let startVal = val;
+
+    dial.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startY = e.clientY;
+      startVal = val;
+      playMechanicalClick(260, 0.02);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      const deltaY = startY - e.clientY;
+      const step = (max - min) / 120;
+      val = Math.min(max, Math.max(min, Math.round(startVal + deltaY * step)));
+      updateKnobVisual();
+    });
+
+    window.addEventListener('mouseup', () => {
+      dragging = false;
+    });
+  });
+
+  // --- 8. Vocal Remover Toggle & MPC Pads ---
+  const vocalToggle = document.getElementById('vocal-toggle');
+  const vocalStatus = document.getElementById('vocal-status');
+  vocalToggle.addEventListener('click', () => {
+    playMechanicalClick(300, 0.04);
+    const active = vocalToggle.classList.toggle('on');
+    vocalStatus.textContent = active ? 'ACTIVE (CENTER CANCEL)' : 'OFF (ORIGINAL)';
+    vocalStatus.style.color = active ? '#0b6e13' : '#2b3036';
+  });
+
+  document.querySelectorAll('.mpc-pad').forEach(pad => {
+    pad.addEventListener('click', () => {
+      pad.classList.add('lit');
+      triggerStageSfx(pad.dataset.sfx);
+      setTimeout(() => pad.classList.remove('lit'), 180);
+    });
+  });
+
+  // --- 9. Analog VU Meter Needle Animation ---
+  const vuLeft = document.getElementById('vu-left');
+  const vuRight = document.getElementById('vu-right');
+  setInterval(() => {
+    if (isPlaying && masterVol > 0 && musicVol > 0) {
+      const level = ((masterVol / 100) * (musicVol / 100));
+      const swingL = -36 + (Math.random() * 68 * level);
+      const swingR = -36 + (Math.random() * 68 * level);
+      vuLeft.style.transform = `translateX(-50%) rotate(${swingL}deg)`;
+      vuRight.style.transform = `translateX(-50%) rotate(${swingR}deg)`;
+    } else {
+      vuLeft.style.transform = `translateX(-50%) rotate(-38deg)`;
+      vuRight.style.transform = `translateX(-50%) rotate(-38deg)`;
+    }
+  }, 110);
+
+  // Initial queue render
+  renderQueue();
+</script>
+</body>
+</html>
